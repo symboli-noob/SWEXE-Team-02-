@@ -18,7 +18,7 @@
 <% end %>
 
 <%# 項目は上から順に入力できるように並べ、必須・任意はラベルの文字で伝える。 %>
-<%= form_with model: @task, class: "app-form", data: { turbo: false } do |f| %>
+<%= form_with model: @task, local: true, class: "app-form", data: { turbo: false } do |f| %>
   <div class="form-field">
     <%= f.label :title, "タスク名（必須）" %>
     <%# タスク名と優先度のエラー時は、該当欄とエラー文を ID で結び、読み上げでも理由が分かるようにする。 %>

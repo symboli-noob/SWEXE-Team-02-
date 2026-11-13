@@ -15,3 +15,4 @@ ja:
               blank: を入力してください
             priority:
               blank: を選んでください
+              inclusion: は「高・中・低」から選んでください
