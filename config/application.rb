@@ -10,6 +10,9 @@ module SwexeTeam02
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
+    # 入力エラーなどは日本語で表示し、日本語訳が未登録のメッセージには英語訳を使う。
+    config.i18n.default_locale = :ja
+    config.i18n.fallbacks = [:en]
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.

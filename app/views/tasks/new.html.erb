@@ -1,43 +1,51 @@
+<%# タブの名前で登録画面だと分かるように、共通レイアウトにタイトルを渡す。 %>
+<% content_for :title, "タスク登録 | ToDoアプリ" %>
 
 <h1>タスク登録</h1>
 
+<%# エラーを先頭にまとめ、それぞれのメッセージから修正する入力欄に移動できるようにする。 %>
 <% if @task.errors.any? %>
-  <div>
-    <h2>入力内容を確認してください</h2>
+  <section class="form-errors" role="alert" aria-labelledby="errors-heading">
+    <h2 id="errors-heading">入力内容を確認してください</h2>
     <ul>
-      <% @task.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+      <% @task.errors.attribute_names.each do |attribute| %>
+        <li id="task_<%= attribute %>_errors">
+          <%= link_to @task.errors.full_messages_for(attribute).join("。"), "#task_#{attribute}" %>
+        </li>
       <% end %>
     </ul>
-  </div>
+  </section>
 <% end %>
 
-<%= form_with model: @task, data: { turbo: false } do |f| %>
-  <div>
-    <%= f.label :title, "タスク名" %>
-    <%= f.text_field :title %>
+<%# 項目は上から順に入力できるように並べ、必須・任意はラベルの文字で伝える。 %>
+<%= form_with model: @task, class: "app-form", data: { turbo: false } do |f| %>
+  <div class="form-field">
+    <%= f.label :title, "タスク名（必須）" %>
+    <%# タスク名と優先度のエラー時は、該当欄とエラー文を ID で結び、読み上げでも理由が分かるようにする。 %>
+    <%= f.text_field :title, required: true, aria: {
+          invalid: @task.errors[:title].any?,
+          describedby: ("task_title_errors" if @task.errors[:title].any?)
+        } %>
   </div>
 
-  <div>
-    <%= f.label :description, "タスクの内容" %>
-    <%= f.text_area :description %>
+  <div class="form-field">
+    <%= f.label :description, "タスクの内容（任意）" %>
+    <%= f.text_area :description, rows: 3 %>
   </div>
 
-  <div>
-    <%= f.label :due_date, "期限" %>
+  <div class="form-field">
+    <%= f.label :due_date, "期限（任意）" %>
     <%= f.date_field :due_date %>
   </div>
 
-  <div>
+  <div class="form-field">
     <%= f.label :priority, "優先度" %>
-    <%= f.select :priority, [
-      ["高", "high"],
-      ["中", "medium"],
-      ["低", "low"]
-    ] %>
+    <%= f.select :priority, [["高", "high"], ["中", "medium"], ["低", "low"]], {}, aria: {
+          invalid: @task.errors[:priority].any?,
+          describedby: ("task_priority_errors" if @task.errors[:priority].any?)
+        } %>
   </div>
 
-  <div>
-    <%= f.submit "登録する" %>
-  </div>
+  <%# 入力を終えた位置で登録できるように、最後に幅の広い主要ボタンを置く。 %>
+  <%= f.submit "登録する", class: "primary-action" %>
 <% end %>
