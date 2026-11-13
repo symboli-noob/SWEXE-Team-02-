@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<%# 読み上げソフトが日本語の発音でページを読めるようにする。 %>
+<html lang="ja">
   <head>
-    <title><%= content_for(:title) || "Swexe Team 02" %></title>
+    <%# ブラウザーのタブには各画面のタイトルを使い、省略された場合はアプリ名を表示する。 %>
+    <title><%= content_for(:title) || "ToDoアプリ" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Swexe Team 02">
@@ -23,13 +25,21 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  
   <body>
-    <% if flash[:notice] %>
-      <p role="status"><%= flash[:notice] %></p>
-    <% end %>
-
-    <%= yield %>
+    <%# すべての画面で本文の幅と余白をそろえるため、各画面の内容を共通の main で囲む。 %>
+    <main class="app-main">
+      <fieldset class="font-size" data-controller="font-size" data-action="change->font-size#save">
+        <legend>文字の大きさ</legend>
+        <div class="font-size-options">
+          <label><input type="radio" name="font_size" value="standard" data-font-size-target="option" checked> 標準</label>
+          <label><input type="radio" name="font_size" value="large" data-font-size-target="option"> 大きめ</label>
+        </div>
+      </fieldset>
+      <%# 登録結果を画面の先頭に表示し、読み上げソフトにも状態メッセージとして伝える。 %>
+      <% if notice.present? %>
+        <p class="notice" role="status"><%= notice %></p>
+      <% end %>
+      <%= yield %>
+    </main>
   </body>
-
 </html>

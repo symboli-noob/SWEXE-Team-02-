@@ -1,0 +1,18 @@
+ja:
+  # 項目名とエラー文をつなぎ、「タスク名を入力してください」のように表示する。
+  errors:
+    format: "%{attribute}%{message}"
+  activerecord:
+    attributes:
+      task:
+        title: タスク名
+        priority: 優先度
+    errors:
+      models:
+        task:
+          attributes:
+            title:
+              blank: を入力してください
+            priority:
+              blank: を選んでください
+              inclusion: は「高・中・低」から選んでください

@@ -1,10 +1,180 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+/* 標準設定では本文を20pxにする。割合で指定することで、ブラウザーの文字サイズ設定も反映される。 */
+:root {
+  font-size: 125%;
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+  color: #182b36;
+  background: #f3f6f7;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+/* 選んだサイズはJavaScriptが無効でも、その画面ですぐに反映する。 */
+:root:has(.font-size input[value="large"]:checked) {
+  font-size: 150%;
+}
+
+.font-size {
+  min-inline-size: 0;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  border: 0;
+}
+
+.font-size legend {
+  padding: 0;
+  font-weight: 650;
+}
+
+.font-size-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.font-size label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.8rem;
+  padding: 0.25rem 0.65rem;
+  border: 2px solid #596d77;
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+.font-size input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: #065a71;
+}
+
+/* 本文の横幅を読みやすい長さに抑え、長い文字列は枠内で折り返す。 */
+.app-main {
+  width: min(100%, 36rem);
+  margin: 1.5rem auto;
+  padding: clamp(1rem, 4vw, 2rem);
+  background: #fff;
+  border: 1px solid #c8d3d8;
+  border-radius: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+h1, h2, p, ul {
+  margin-block-start: 0;
+}
+
+h1 {
+  margin-block-end: 1.25rem;
+  font-size: 1.6rem;
+  line-height: 1.35;
+}
+
+/* 入力欄は上から順にたどれる1列にし、ラベルと入力欄の間よりも項目同士の間を広く取る。 */
+.app-form, .form-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.app-form {
+  gap: 1.25rem;
+}
+
+.form-field {
+  gap: 0.3rem;
+}
+
+.form-field label {
+  font-weight: 650;
+}
+
+/* 入力欄と登録ボタンは横幅いっぱいに広げる。標準で高さ56pxを確保し、文字の拡大にも合わせる。 */
+.form-field :is(input, textarea, select), .primary-action {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.8rem;
+  padding: 0.5rem 0.65rem;
+  border: 2px solid #596d77;
+  border-radius: 0.4rem;
+  font: inherit;
+  color: inherit;
+  background: #fff;
+}
+
+.form-field textarea {
+  resize: vertical;
+}
+
+/* フォームで行う主な操作は、濃い青緑の背景と白い文字で目立たせる。 */
+.primary-action {
+  border-color: #065a71;
+  background: #065a71;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-action:hover {
+  background: #08485a;
+}
+
+/* Tabキーで移動したときに、次に操作する項目を太い枠で示す。 */
+:focus-visible {
+  outline: 3px solid #164cb0;
+  outline-offset: 3px;
+}
+
+/* 登録完了と入力エラーのメッセージは、本文から区別できるように背景色と左枠を付ける。 */
+.notice, .form-errors {
+  margin-block: 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border-inline-start: 0.25rem solid;
+}
+
+.notice {
+  color: #174e39;
+  background: #e8f5ed;
+}
+
+.form-errors {
+  color: #85271f;
+  background: #fff1ee;
+}
+
+.form-errors h2 {
+  margin-block-end: 0.3rem;
+  font-size: 1.15rem;
+}
+
+.form-errors ul {
+  margin-block-end: 0;
+  padding-inline-start: 1.3rem;
+}
+
+/* エラーの説明をタップして該当欄へ移動できるように、リンクにもボタンと同じ高さを確保する。 */
+.form-errors a {
+  display: inline-block;
+  min-height: 2.8rem;
+  padding-block: 0.55rem;
+  color: inherit;
+}
+
+.form-field [aria-invalid="true"] {
+  border-color: #85271f;
+}
+
+/* スマートフォンなど幅の狭い画面では外側の余白と枠を外し、入力に使える幅を確保する。 */
+@media (max-width: 38rem) {
+  .app-main {
+    margin-block: 0;
+    border: 0;
+    border-radius: 0;
+  }
+}
