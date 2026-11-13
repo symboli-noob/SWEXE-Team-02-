@@ -19,8 +19,22 @@
   </div>
 
   <div>
+    <%= f.label :description, "タスクの内容" %>
+    <%= f.text_area :description %>
+  </div>
+
+  <div>
     <%= f.label :due_date, "期限" %>
     <%= f.date_field :due_date %>
+  </div>
+
+  <div>
+    <%= f.label :priority, "優先度" %>
+    <%= f.select :priority, [
+      ["高", "high"],
+      ["中", "medium"],
+      ["低", "low"]
+    ] %>
   </div>
 
   <div>
