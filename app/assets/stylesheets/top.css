@@ -1,0 +1,144 @@
+/* Topの検索・操作ボタンは、本文と同じ文字サイズで使えるようにする。 */
+.top-screen :is(button, input, select, .top-add, .top-history, .top-settings > summary) {
+  min-width: 0;
+  max-width: 100%;
+  min-height: 2.6rem;
+  padding: 0.35rem 0.65rem;
+  border: 2px solid #596d77;
+  border-radius: 0.4rem;
+  color: inherit;
+  background: white;
+  font: inherit;
+}
+
+.top-screen :is(button, [type="submit"], summary) { cursor: pointer; }
+.top-screen :is(.top-add, .top-history) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.top-tools, .top-search-row {
+  display: grid;
+  align-items: start;
+  gap: 0.5rem;
+}
+
+.top-tools { grid-template-columns: auto minmax(0, 1fr); }
+.top-search-row { grid-template-columns: minmax(0, 1fr) auto; }
+.top-settings { position: relative; }
+.top-settings > summary { display: flex; align-items: center; font-weight: 700; }
+.top-settings[open] > summary { border-color: #065a71; }
+
+.top-settings-panel {
+  position: absolute;
+  z-index: 1;
+  width: max-content;
+  max-width: calc(100vw - 2.6rem);
+  margin-top: 0.25rem;
+  padding: 0.7rem;
+  border: 2px solid #596d77;
+  border-radius: 0.4rem;
+  background: white;
+}
+
+.top-settings-panel .font-size { margin: 0; }
+.top-settings-panel input[type="radio"] { min-height: 0; padding: 0; }
+.top-filters { margin-block: 0.15rem 0.6rem; }
+.top-filters > summary, .top-reset {
+  padding-block: 0.4rem;
+  min-height: 2.2rem;
+  color: #07566c;
+}
+
+.top-filter-fields { display: grid; gap: 0.25rem; }
+.top-filter-fields label { margin-top: 0.3rem; font-weight: 650; }
+.top-filter-fields input { margin-top: 0.4rem; }
+
+.top-screen h1 {
+  margin: 0.35rem 0 0.65rem;
+  padding: 0.5rem;
+  border-block: 2px solid #344953;
+  background: #eef3f4;
+  text-align: center;
+}
+
+.top-time-row, .task-dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.top-time-row { margin-bottom: 1rem; }
+.top-time-row p { margin: 0; }
+.top-reset { display: inline-block; }
+.top-section {
+  margin-bottom: 0.8rem;
+  padding: 0.55rem;
+  border: 1px solid #83969e;
+  border-radius: 0.55rem;
+}
+
+.top-section h2 { margin: 0 0 0.45rem; font-size: 1.2rem; }
+.top-empty { margin: 0; padding: 0.35rem; color: #425a65; }
+
+.task-card {
+  --stripe: #647883;
+  --tint: #f6f8f9;
+  border: 1px solid var(--stripe);
+  border-inline-start: 0.36rem solid var(--stripe);
+  border-radius: 0.4rem;
+  background: var(--tint);
+}
+
+.task-card + .task-card { margin-top: 0.4rem; }
+.task-card.priority-high { --stripe: #b65326; --tint: #fff1e6; }
+.task-card.priority-medium { --stripe: #926900; --tint: #fff7d7; }
+.task-card.is-complete { --stripe: #38825d; --tint: #e7f4e9; }
+
+.task-card summary {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 3.5rem;
+  padding: 0.45rem 0.6rem;
+}
+
+.task-card summary::-webkit-details-marker { display: none; }
+.task-card summary::after {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border: solid currentColor;
+  border-width: 2px 2px 0 0;
+  transform: rotate(45deg);
+}
+.task-card[open] > summary::after { transform: rotate(135deg); }
+.task-when { font-variant-numeric: tabular-nums; max-width: 6.5rem; }
+.task-caption { padding-inline-start: 0.6rem; border-inline-start: 1px solid #83969e; }
+.task-caption strong, .task-caption span { display: block; }
+.task-caption strong { font-size: 1.15rem; }
+.task-caption span { font-size: 0.9rem; }
+.task-expanded { padding: 0.75rem; border-top: 1px solid var(--stripe); }
+.task-expanded p { margin-bottom: 0.65rem; }
+.task-expanded-title { font-size: 1.35rem; }
+.task-description { font-size: 1.12rem; white-space: pre-wrap; }
+.task-status-form { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
+.task-expanded > .task-delete { margin-top: 0.7rem; }
+.top-screen .task-delete { color: #85271f; border-color: #85271f; }
+.task-dialog { max-width: min(90vw, 24rem); padding: 1rem; border-radius: 0.55rem; color: #182b36; overflow-wrap: anywhere; }
+.task-dialog h3 { margin: 0 0 1rem; }
+.task-dialog::backdrop { background: rgb(18 35 44 / 55%); }
+.task-dialog-actions { justify-content: flex-end; }
+.top-screen .top-add { width: 100%; background: #065a71; border-color: #065a71; color: white; }
+
+@media (max-width: 26rem) {
+  .task-card summary { gap: 0.4rem; padding-inline: 0.4rem; }
+  .task-when { max-width: 4.8rem; }
+  .top-search-row { gap: 0.25rem; }
+}

@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
-  # トップページ（/）を開いたら、そのままタスクを登録できるようにする。
-  root "tasks#new"
-  resources :tasks, only: [:new, :create]
+  root "top#show"
+  resources :tasks, only: [:new, :create, :update, :destroy]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

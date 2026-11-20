@@ -34,6 +34,11 @@
   </div>
 
   <div class="form-field">
+    <%= f.label :scheduled_at, "予定の開始日時（任意）" %>
+    <%= f.datetime_local_field :scheduled_at %>
+  </div>
+
+  <div class="form-field">
     <%= f.label :due_date, "期限（任意）" %>
     <%= f.date_field :due_date %>
   </div>
@@ -49,3 +54,5 @@
   <%# 入力を終えた位置で登録できるように、最後に幅の広い主要ボタンを置く。 %>
   <%= f.submit "登録する", class: "primary-action" %>
 <% end %>
+
+<%= link_to "Top画面に戻る", root_path %>
