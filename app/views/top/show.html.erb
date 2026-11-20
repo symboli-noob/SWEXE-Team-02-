@@ -1,0 +1,54 @@
+<% content_for :title, "今日のやること | ToDoアプリ" %>
+<% content_for :top_settings, "true" %>
+
+<div class="top-screen">
+  <div class="top-tools">
+    <details class="top-settings">
+      <summary>設定</summary>
+      <div class="top-settings-panel"><%= render "shared/font_size" %></div>
+    </details>
+    <%= form_with url: root_path, method: :get, local: true, class: "top-search", role: "search" do |f| %>
+      <%= hidden_field_tag :search, "1" %>
+      <div class="top-search-row">
+        <%= f.search_field :q, value: params[:q], placeholder: "タスク名を入力", aria: { label: "タスク名で検索" } %>
+        <%= f.submit "検索" %>
+      </div>
+      <details class="top-filters" <%= "open" if @mode == :search %>>
+        <summary>絞り込み・並べ替え</summary>
+        <div class="top-filter-fields">
+          <%= f.label :priority, "優先度" %>
+          <%= f.select :priority, task_priority_options, include_blank: "すべて", selected: params[:priority] %>
+          <%= f.label :completion, "完了状態" %>
+          <%= f.select :completion, { "完了" => "complete", "未完了" => "incomplete" }, include_blank: "すべて", selected: params[:completion] %>
+          <%= f.label :sort, "並び順" %>
+          <%= f.select :sort, { "期限が近い順" => "due_date" }, include_blank: "標準", selected: params[:sort] %>
+          <%= f.submit "条件を適用" %>
+        </div>
+      </details>
+    <% end %>
+  </div>
+
+  <h1>今日のやること</h1>
+  <div class="top-time-row">
+    <div>
+      <p>今日　<time datetime="<%= @now.to_date.iso8601 %>"><%= top_date_label(@now) %></time></p>
+      <p>今の時刻　<time datetime="<%= @now.iso8601 %>"><%= @now.strftime("%-H:%M") %></time></p>
+    </div>
+    <%= link_to "履歴", root_path(history: 1), class: "top-history" %>
+  </div>
+
+  <% if @mode != :today %>
+    <%= link_to (@mode == :search ? "条件をクリア" : "今日の予定に戻る"), root_path, class: "top-reset" %>
+  <% end %>
+  <% @sections.each do |heading, tasks| %>
+    <section class="top-section">
+      <h2><%= heading %></h2>
+      <% if tasks.any? %>
+        <%= render partial: "top/card", collection: tasks, as: :task %>
+      <% else %>
+        <p class="top-empty"><%= @mode == :search ? "条件に合う予定はありません" : "予定はありません" %></p>
+      <% end %>
+    </section>
+  <% end %>
+  <%= link_to "＋ 予定を追加", new_task_path, class: "top-add" %>
+</div>

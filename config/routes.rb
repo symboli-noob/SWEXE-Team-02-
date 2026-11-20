@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  # トップページ（/）を開いたら、そのままタスクを登録できるようにする。
-  root "tasks#new"
-  resources :tasks, only: [:index, :show, :new, :create]
+  root "top#show"
+  resources :tasks, only: [:index, :show, :new, :create, :update, :destroy]
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

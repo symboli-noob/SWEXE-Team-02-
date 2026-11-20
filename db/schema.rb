@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_13_032854) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_20_000000) do
   create_table "tasks", force: :cascade do |t|
     t.string "title"
     t.date "due_date"
@@ -18,5 +18,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_13_032854) do
     t.datetime "updated_at", null: false
     t.text "description"
     t.integer "priority"
+    t.datetime "scheduled_at"
+    t.integer "status", default: 0, null: false
+    t.index ["scheduled_at"], name: "index_tasks_on_scheduled_at"
   end
 end
