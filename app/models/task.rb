@@ -3,11 +3,13 @@ class Task < ApplicationRecord
     low: 0,
     medium: 1,
     high: 2
-  }, default: :medium, validate: true
-  enum :status, { not_started: 0, in_progress: 1, completed: 2 }, default: :not_started, validate: true
+  }, default: :medium, validate: { allow_nil: true }
+  enum :status, { not_started: 0, in_progress: 1, completed: 2 }, default: :not_started,
+    validate: { message: "は未着手・進行中・完了から選んでください" }
 
   validates :title, presence: { message: "を入力してください" }
-  validates :priority, presence: true
+  # 優先度が未設定の旧データは、その値を保ったまま状態を変更できる。
+  validates :priority, presence: true, if: -> { new_record? || will_save_change_to_priority? }
 
   def self.search(filters)
     tasks = all
@@ -26,6 +28,7 @@ class Task < ApplicationRecord
 
   def self.human_attribute_name(attr, options = {})
     return "タスク名" if attr.to_s == "title"
+    return "状態" if attr.to_s == "status"
     super
   end
 end

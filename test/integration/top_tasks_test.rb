@@ -74,6 +74,39 @@ class TopTasksTest < ActionDispatch::IntegrationTest
     assert_select "details#task_#{other.id} summary", text: /残す予定/
   end
 
+  test "status can change on old tasks with an unset priority without inventing a priority" do
+    task = tasks(:one)
+    assert_nil task.priority
+
+    patch task_path(task), params: { task: { status: "completed" } }
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_select "[role=status]", text: "予定の状態を変更しました"
+    assert_predicate task.reload, :completed?
+    assert_nil task.priority
+
+    refute Task.new(title: "新しい予定", priority: nil).valid?
+    assert task.update(priority: :high)
+    refute task.update(priority: nil)
+    assert_equal "high", task.reload.priority
+  end
+
+  test "invalid status and invalid task data leave the saved status intact and explain the error" do
+    task = Task.create!(title: "掃除")
+    patch task_path(task), params: { task: { status: "unknown" } }
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_select "[role=status]", text: /状態を変更できませんでした。.*未着手・進行中・完了/
+    assert_predicate task.reload, :not_started?
+
+    task.update_column(:title, nil)
+    patch task_path(task), params: { task: { status: "completed" } }
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_select "[role=status]", text: /状態を変更できませんでした。.*タスク名/
+    assert_predicate task.reload, :not_started?
+  end
+
   private
 
   def assert_card_in(heading, *tasks)
