@@ -19,7 +19,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to new_task_url
+    assert_redirected_to tasks_url
   end
 
   test "should not create task without title" do
