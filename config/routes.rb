@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   root "top#show"
-  resources :tasks, only: [:new, :create, :update, :destroy]
+  resources :tasks, only: [:index, :show, :new, :create, :update, :destroy]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

@@ -1,0 +1,32 @@
+<div class="container mt-4">
+  <h1 class="mb-4">タスク詳細</h1>
+
+  <div class="card">
+    <div class="card-body">
+      <h2 class="card-title"><%= @task.title %></h2>
+
+      <p>
+        <strong>内容：</strong>
+        <%= @task.description.presence || "未設定" %>
+      </p>
+
+      <p>
+        <strong>期限：</strong>
+        <%= @task.due_date&.strftime("%Y年%m月%d日") || "未設定" %>
+      </p>
+
+      <p>
+        <strong>優先度：</strong>
+        <%= {
+          "high" => "高",
+          "medium" => "中",
+          "low" => "低"
+        }[@task.priority] || "未設定" %>
+      </p>
+    </div>
+  </div>
+
+  <%= link_to "一覧に戻る",
+      tasks_path,
+      class: "btn btn-secondary mt-3" %>
+</div>
