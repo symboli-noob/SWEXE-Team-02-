@@ -1,5 +1,5 @@
-<details id="<%= dom_id(task) %>" class="task-card <%= task.completed? ? "is-complete" : "priority-#{task.priority}" %>">
-  <summary>
+<article id="<%= dom_id(task) %>" class="task-card <%= task.completed? ? "is-complete" : "priority-#{task.priority}" %>">
+  <%= link_to task_path(task, from: "top"), class: "task-card-link" do %>
     <span class="task-when">
       <% if task.scheduled_at %>
         <time datetime="<%= task.scheduled_at.iso8601 %>">
@@ -14,25 +14,27 @@
       <strong><%= task.title %></strong>
       <span><%= task_status_options.key(task.status) %> · 優先度<%= task_priority_options.key(task.priority) || "未設定" %></span>
     </span>
-  </summary>
-  <div class="task-expanded" data-controller="delete-dialog">
-    <p class="task-expanded-title"><strong><%= task.title %></strong></p>
-    <% if task.description.present? %>
-      <p class="task-description"><%= task.description %></p>
-    <% end %>
-    <p>期限　<%= task.due_date&.strftime("%Y/%-m/%-d") || "未設定" %></p>
-    <%= form_with model: task, local: true, class: "task-status-form" do |f| %>
-      <%= f.label :status, "状態", for: dom_id(task, :status) %>
-      <%= f.select :status, task_status_options, {}, id: dom_id(task, :status) %>
-      <%= f.submit "状態を変更" %>
-    <% end %>
-    <button type="button" class="task-delete" data-action="delete-dialog#open">削除</button>
-    <dialog class="task-dialog" aria-labelledby="<%= dom_id(task, :confirm) %>" data-delete-dialog-target="dialog">
-      <h3 id="<%= dom_id(task, :confirm) %>">「<%= task.title %>」を削除しますか？</h3>
-      <div class="task-dialog-actions">
-        <button type="button" autofocus data-action="delete-dialog#cancel">キャンセル</button>
-        <%= button_to "削除する", task_path(task), method: :delete, class: "task-delete" %>
-      </div>
-    </dialog>
-  </div>
-</details>
+  <% end %>
+  <details class="task-card-actions">
+    <summary>状態変更・削除</summary>
+    <div class="task-expanded" data-controller="delete-dialog">
+      <% if task.description.present? %>
+        <p class="task-description"><%= task.description %></p>
+      <% end %>
+      <p>期限　<%= task.due_date&.strftime("%Y/%-m/%-d") || "未設定" %></p>
+      <%= form_with model: task, local: true, class: "task-status-form" do |f| %>
+        <%= f.label :status, "状態", for: dom_id(task, :status) %>
+        <%= f.select :status, task_status_options, {}, id: dom_id(task, :status) %>
+        <%= f.submit "状態を変更" %>
+      <% end %>
+      <button type="button" class="task-delete" data-action="delete-dialog#open">削除</button>
+      <dialog class="task-dialog" aria-labelledby="<%= dom_id(task, :confirm) %>" data-delete-dialog-target="dialog">
+        <h3 id="<%= dom_id(task, :confirm) %>">「<%= task.title %>」を削除しますか？</h3>
+        <div class="task-dialog-actions">
+          <button type="button" autofocus data-action="delete-dialog#cancel">キャンセル</button>
+          <%= button_to "削除する", task_path(task), method: :delete, class: "task-delete" %>
+        </div>
+      </dialog>
+    </div>
+  </details>
+</article>
