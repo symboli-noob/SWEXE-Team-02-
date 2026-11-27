@@ -11,6 +11,10 @@ class TasksController < ApplicationController
     @task = Task.find(params[:id])
   end
 
+  def edit
+    @task = Task.find(params[:id])
+  end
+
   def create
     @task = Task.new(task_params)
 
@@ -22,14 +26,14 @@ class TasksController < ApplicationController
   end
 
   def update
-    task = Task.find(params[:id])
-    status = params.expect(task: [:status])[:status]
-    message = if task.update(status: status)
-      "予定の状態を変更しました"
+    @task = Task.find(params[:id])
+    if params.require(:task).key?(:status)
+      update_status(@task)
+    elsif @task.update(task_params)
+      redirect_to @task, status: :see_other, notice: "タスクを更新しました"
     else
-      "予定の状態を変更できませんでした。#{task.errors.full_messages.join("、")}"
+      render :edit, status: :unprocessable_entity
     end
-    redirect_to root_path, status: :see_other, notice: message
   end
 
   def destroy
@@ -38,6 +42,16 @@ class TasksController < ApplicationController
   end
 
   private
+
+  def update_status(task)
+    status = params.expect(task: [:status])[:status]
+    message = if task.update(status: status)
+      "予定の状態を変更しました"
+    else
+      "予定の状態を変更できませんでした。#{task.errors.full_messages.join("、")}"
+    end
+    redirect_to root_path, status: :see_other, notice: message
+  end
 
   def task_params
     params.require(:task).permit(:title, :description, :scheduled_at, :due_date, :priority)

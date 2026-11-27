@@ -11,6 +11,11 @@
       </p>
 
       <p>
+        <strong>予定の開始日時：</strong>
+        <%= @task.scheduled_at&.strftime("%Y年%m月%d日 %H:%M") || "未設定" %>
+      </p>
+
+      <p>
         <strong>期限：</strong>
         <%= @task.due_date&.strftime("%Y年%m月%d日") || "未設定" %>
       </p>
@@ -26,6 +31,7 @@
     </div>
   </div>
 
+  <%= link_to "編集", edit_task_path(@task), class: "btn btn-primary mt-3" %>
   <%= link_to "一覧に戻る",
       tasks_path,
       class: "btn btn-secondary mt-3" %>
