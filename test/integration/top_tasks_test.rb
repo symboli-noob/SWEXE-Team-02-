@@ -19,7 +19,7 @@ class TopTasksTest < ActionDispatch::IntegrationTest
       assert_card_in "いま やること", started, active
       assert_card_in "このあとの予定", upcoming
       assert_card_in "終わったこと", done
-      assert_select "details#task_#{yesterday.id}, details#task_#{tomorrow.id}", count: 0
+      assert_select "#task_#{yesterday.id}, #task_#{tomorrow.id}", count: 0
     end
   end
 
@@ -37,12 +37,12 @@ class TopTasksTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal [ earlier, later, no_deadline ].map { |task| "task_#{task.id}" },
-      css_select("details.task-card").map { |card| card["id"] }
+      css_select(".task-card").map { |card| card["id"] }
     get root_path, params: filters.merge(completion: "complete")
-    assert_equal [ "task_#{done.id}" ], css_select("details.task-card").map { |card| card["id"] }
+    assert_equal [ "task_#{done.id}" ], css_select(".task-card").map { |card| card["id"] }
 
     get root_path, params: { q: "一致しないタスク名" }
-    assert_select "details.task-card", count: 0
+    assert_select ".task-card", count: 0
     assert_match "条件に合う予定はありません", response.body
     assert_select "a[href=?]", root_path, text: "条件をクリア"
   end
@@ -64,14 +64,27 @@ class TopTasksTest < ActionDispatch::IntegrationTest
     first = Task.create!(title: "削除する予定", scheduled_at: Time.current)
     other = Task.create!(title: "残す予定", scheduled_at: Time.current)
 
+    get root_path
+    assert_select "#task_#{first.id}" do
+      assert_select "a[href=?]", task_path(first, from: "top") do
+        assert_select "form, button, select, dialog", count: 0
+      end
+      assert_select "form[action=?] select[name=?]", task_path(first), "task[status]"
+      assert_select "button[data-action=?]", "delete-dialog#open", text: "削除"
+      assert_select "dialog" do
+        assert_select "button[type=button][data-action=?]", "delete-dialog#cancel", text: "キャンセル"
+        assert_select "form[action=?] input[name=_method][value=delete]", task_path(first)
+      end
+    end
+
     assert_difference("Task.count", -1) { delete task_path(first) }
     assert_redirected_to root_path
     follow_redirect!
     assert_match "予定を削除しました", response.body
 
     get root_path
-    assert_select "details#task_#{first.id}", count: 0
-    assert_select "details#task_#{other.id} summary", text: /残す予定/
+    assert_select "#task_#{first.id}", count: 0
+    assert_select "#task_#{other.id} a[href=?]", task_path(other, from: "top"), text: /残す予定/
   end
 
   test "status can change on old tasks with an unset priority without inventing a priority" do
@@ -113,8 +126,8 @@ class TopTasksTest < ActionDispatch::IntegrationTest
     section = css_select("section > h2").find { |h2| h2.text.strip == heading }&.parent
     assert section, "#{heading}の表示領域がありません"
     tasks.each do |task|
-      assert_select section, "details#task_#{task.id} summary", text: /#{Regexp.escape(task.title)}/
-      assert_select "details#task_#{task.id}", count: 1
+      assert_select section, "#task_#{task.id} a[href=?]", task_path(task, from: "top"), text: /#{Regexp.escape(task.title)}/
+      assert_select "#task_#{task.id}", count: 1
     end
   end
 end

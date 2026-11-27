@@ -1,38 +1,75 @@
-<div class="container mt-4">
-  <h1 class="mb-4">タスク詳細</h1>
+<% content_for :title, "#{@task.title} | タスク詳細" %>
+<% priority_label = task_priority_options.key(@task.priority) || "未設定" %>
+<% from_top = params[:from] == "top" %>
 
-  <div class="card">
-    <div class="card-body">
-      <h2 class="card-title"><%= @task.title %></h2>
+<article class="task-detail" data-priority="<%= @task.priority %>">
+  <header class="task-detail-heading">
+    <h1>タスク詳細</h1>
+    <%= link_to "編集", edit_task_path(@task), class: "task-detail-edit" %>
+  </header>
 
-      <p>
-        <strong>内容：</strong>
-        <%= @task.description.presence || "未設定" %>
-      </p>
-
-      <p>
-        <strong>予定の開始日時：</strong>
-        <%= @task.scheduled_at&.strftime("%Y年%m月%d日 %H:%M") || "未設定" %>
-      </p>
-
-      <p>
-        <strong>期限：</strong>
-        <%= @task.due_date&.strftime("%Y年%m月%d日") || "未設定" %>
-      </p>
-
-      <p>
-        <strong>優先度：</strong>
-        <%= {
-          "high" => "高",
-          "medium" => "中",
-          "low" => "低"
-        }[@task.priority] || "未設定" %>
-      </p>
+  <section class="task-detail-summary" aria-labelledby="task-title">
+    <div class="task-detail-date">
+      <% if @task.scheduled_at %>
+        <%= time_tag @task.scheduled_at.to_date, "#{@task.scheduled_at.year}年#{top_date_label(@task.scheduled_at)}" %>
+      <% else %>
+        <span>予定日時未設定</span>
+      <% end %>
+      <span class="task-detail-badge">優先度 <%= priority_label %></span>
     </div>
-  </div>
+    <div class="task-detail-title">
+      <% if @task.scheduled_at %>
+        <%= time_tag @task.scheduled_at, @task.scheduled_at.strftime("%-H:%M") %>
+      <% end %>
+      <h2 id="task-title"><%= @task.title %></h2>
+    </div>
+  </section>
 
-  <%= link_to "編集", edit_task_path(@task), class: "btn btn-primary mt-3" %>
-  <%= link_to "一覧に戻る",
-      tasks_path,
-      class: "btn btn-secondary mt-3" %>
-</div>
+  <dl class="task-detail-fields">
+    <div class="task-detail-wide">
+      <dt>メモ</dt>
+      <dd class="task-detail-memo"><%= @task.description.presence || "未設定" %></dd>
+    </div>
+    <div class="task-detail-wide">
+      <dt>写真</dt>
+      <dd>写真なし</dd>
+    </div>
+    <div>
+      <dt>場所</dt>
+      <dd>未設定</dd>
+    </div>
+    <div>
+      <dt>通知</dt>
+      <dd>未設定</dd>
+    </div>
+    <div>
+      <dt>状態</dt>
+      <dd class="task-detail-status" data-status="<%= @task.status %>"><%= task_status_options.key(@task.status) %></dd>
+    </div>
+    <div>
+      <dt>優先度</dt>
+      <dd class="task-detail-priority"><%= priority_label %></dd>
+    </div>
+    <div class="task-detail-wide">
+      <dt>期限</dt>
+      <dd><%= @task.due_date ? time_tag(@task.due_date, @task.due_date.strftime("%Y年%m月%d日")) : "未設定" %></dd>
+    </div>
+    <div>
+      <dt>作成日時</dt>
+      <dd><%= time_tag @task.created_at, @task.created_at.strftime("%Y年%m月%d日 %H:%M") %></dd>
+    </div>
+    <div>
+      <dt>最終更新日時</dt>
+      <dd><%= time_tag @task.updated_at, @task.updated_at.strftime("%Y年%m月%d日 %H:%M") %></dd>
+    </div>
+  </dl>
+
+  <div class="task-detail-actions">
+    <%= link_to "戻る", (from_top ? root_path : tasks_path), class: "task-detail-back",
+        aria: { label: from_top ? "Top画面に戻る" : "タスク一覧に戻る" } %>
+    <% unless @task.completed? %>
+      <%= button_to "完了にする", task_path(@task), method: :patch,
+          params: { task: { status: "completed" } }, class: "primary-action" %>
+    <% end %>
+  </div>
+</article>

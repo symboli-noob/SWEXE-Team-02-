@@ -19,7 +19,8 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     patch task_path(task), params: { task: { due_date: "2026-11-28" } }
     assert_redirected_to task_path(task)
     follow_redirect!
-    assert_select "p", text: /2026年11月28日/
+    deadline = assert_select("dt", text: "期限", count: 1).first
+    assert_select deadline.next_element, "time[datetime=?]", "2026-11-28", text: "2026年11月28日"
     assert_equal previous, task.reload.attributes.except("updated_at", "due_date")
   end
 

@@ -100,17 +100,19 @@
 .task-card.priority-medium { --stripe: #926900; --tint: #fff7d7; }
 .task-card.is-complete { --stripe: #38825d; --tint: #e7f4e9; }
 
-.task-card summary {
+.task-card-link {
   display: grid;
   grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.6rem;
   min-height: 3.5rem;
   padding: 0.45rem 0.6rem;
+  color: inherit;
+  text-decoration: none;
 }
 
-.task-card summary::-webkit-details-marker { display: none; }
-.task-card summary::after {
+.task-card-link:hover strong, .task-card-link:focus-visible strong { text-decoration: underline; }
+.task-card-link::after {
   content: "";
   width: 0.45rem;
   height: 0.45rem;
@@ -118,15 +120,15 @@
   border-width: 2px 2px 0 0;
   transform: rotate(45deg);
 }
-.task-card[open] > summary::after { transform: rotate(135deg); }
 .task-when { font-variant-numeric: tabular-nums; max-width: 6.5rem; }
 .task-caption { padding-inline-start: 0.6rem; border-inline-start: 1px solid #83969e; }
 .task-caption strong, .task-caption span { display: block; }
 .task-caption strong { font-size: 1.15rem; }
 .task-caption span { font-size: 0.9rem; }
-.task-expanded { padding: 0.75rem; border-top: 1px solid var(--stripe); }
+.task-card-actions { border-top: 1px solid var(--stripe); }
+.task-card-actions > summary { min-height: 2.2rem; padding: 0.35rem 0.6rem; }
+.task-expanded { padding: 0.4rem 0.75rem 0.75rem; }
 .task-expanded p { margin-bottom: 0.65rem; }
-.task-expanded-title { font-size: 1.35rem; }
 .task-description { font-size: 1.12rem; white-space: pre-wrap; }
 .task-status-form { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
 .task-expanded > .task-delete { margin-top: 0.7rem; }
@@ -138,7 +140,7 @@
 .top-screen .top-add { width: 100%; background: #065a71; border-color: #065a71; color: white; }
 
 @media (max-width: 26rem) {
-  .task-card summary { gap: 0.4rem; padding-inline: 0.4rem; }
+  .task-card-link { gap: 0.4rem; padding-inline: 0.4rem; }
   .task-when { max-width: 4.8rem; }
   .top-search-row { gap: 0.25rem; }
 }
