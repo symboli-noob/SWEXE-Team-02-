@@ -5,6 +5,7 @@
 <article class="task-detail" data-priority="<%= @task.priority %>">
   <header class="task-detail-heading">
     <h1>タスク詳細</h1>
+    <%= link_to "編集", edit_task_path(@task), class: "task-detail-edit" %>
   </header>
 
   <section class="task-detail-summary" aria-labelledby="task-title">
